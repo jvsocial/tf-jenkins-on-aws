@@ -1,101 +1,79 @@
 # Jenkins on AWS - Terraform Setup
 
-This repository provides a Terraform configuration to automate the installation of Jenkins on AWS. Follow the instructions below to fork, clone, modify, and run the Terraform script to deploy Jenkins in your AWS environment.
+This repository provides a Terraform configuration to automate the installation of Jenkins on AWS.
 
 ## Prerequisites
 
-Before you start, make sure you have:
-
 - [Terraform](https://www.terraform.io/downloads.html) installed.
-- AWS credentials (Access Key, Secret Key, and Token) with sufficient permissions to create resources (EC2, IAM, Security Groups, etc.).
+- AWS credentials with permissions to create resources.
 
 ## Steps to Run
 
-### 1. Fork the Repository
+### 1. Fork and Clone the Repository
 
-Since multiple users may need to make their own modifications, **first fork this repository** to your own GitHub account by clicking the "Fork" button in the upper right corner of the repository page.
-
-Here is the original repository link for reference:
-
-```
-https://github.com/jvsocial/tf-jenkins-on-aws
-```
-
-Once you have forked the repository, you will have your own copy under your GitHub username.
-
-### 2. Clone Your Forked Repository
-
-After forking, clone the repository using the **URL of your own fork**. Make sure to replace `yourusername` with your actual GitHub username in the command below:
+Fork the repository to your own GitHub account, then clone it using your forked repository's URL:
 
 ```sh
 git clone https://github.com/yourusername/tf-jenkins-on-aws.git
 cd tf-jenkins-on-aws
 ```
 
-### 3. Configure AWS Credentials
+### 2. Configure AWS Credentials
 
-You need to configure the `terraform.tfvars` file with your AWS credentials. This file contains sensitive information, so handle it securely.
-
-If the file doesn't exist, create it in the root of the repository:
-
-```sh
-touch terraform.tfvars
-```
-
-Edit the file `terraform.tfvars` and add the following content:
+Create and edit the `terraform.tfvars` file:
 
 ```hcl
 aws_access_key = "XXX"    # Replace with your AWS access key
 aws_secret_key = "XXX"    # Replace with your AWS secret key
 aws_token      = "XXX"    # Replace with your AWS session token
-aws_region     = "us-east-1"  # Replace with your desired AWS region (e.g., us-east-1)
+aws_region     = "us-east-1"  # Replace with your desired AWS region
 ```
 
-### 4. Initialize Terraform
-
-Run the following command to initialize the Terraform environment:
+### 3. Initialize and Apply Terraform
 
 ```sh
 terraform init
-```
-
-This will download the necessary provider plugins and set up your workspace.
-
-### 5. Apply the Terraform Plan
-
-Run the following command to apply the Terraform configuration and deploy Jenkins on AWS:
-
-```sh
 terraform apply
 ```
 
-You will be prompted to confirm the actions Terraform will take. Type `yes` and press Enter to proceed. This will provision the necessary infrastructure and install Jenkins.
+### 4. Access Jenkins
 
-### 6. Access Jenkins
-
-Once the Terraform script completes, you will get the public IP address or DNS name of the Jenkins server. You can access Jenkins in your web browser using this URL.
-
-The default Jenkins port is `8080`. So, you can access it via:
+- You will get the public IP address from the terminal where `terraform apply` was run.
+- It may take some time for Jenkins to fully initialize. Once ready, access Jenkins on port `8080`:
 
 ```
 http://<Jenkins_Public_IP>:8080
 ```
 
-### 7. Clean Up
+### 5. Retrieve Initial Admin Password
 
-After you're done with the Jenkins instance, you can destroy all resources by running:
+To log in to Jenkins, connect to the EC2 VM where Jenkins is installed and run:
+
+```sh
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+```
+
+### 6. Install Jenkins Plugins
+
+After logging into Jenkins, install the following plugins:
+
+1. Go to `Manage Jenkins` → `Manage Plugins` → `Available` tab.
+2. Search and install these plugins:
+   - **Docker Pipeline**
+   - **Delivery Pipeline**
+   - **Docker Commons Plugins**
+3. Click `Install without restart` and wait for the installation to complete.
+
+### 7. Cleanup
+
+After you're done, destroy all resources:
 
 ```sh
 terraform destroy
 ```
 
-This will tear down the entire infrastructure created by Terraform.
+## Delivery Details
 
-## Notes
-
-- Make sure you handle the `terraform.tfvars` file securely as it contains sensitive AWS credentials.
-- If you encounter any issues, make sure your AWS IAM role has the correct permissions to provision EC2 instances, manage IAM roles, and configure security groups.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+- EC2 VM Created
+- Ansible Installed
+- Jenkins Installed via Ansible
