@@ -23,7 +23,7 @@ resource "aws_instance" "project_demo" {
 
 
   tags = {
-    Name = "project1_demo"
+    Name = var.instance_name
   }
 
   user_data = <<-EOF
@@ -37,7 +37,7 @@ resource "aws_instance" "project_demo" {
 }
 
 resource "aws_security_group" "demo" {
-  name        = "demo_sg"
+  name        = var.security_group_name
   description = "Demo security group"
 
   ingress {

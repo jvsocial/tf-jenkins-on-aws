@@ -20,3 +20,17 @@ variable "aws_region" {
   type        = string
   default     = "us-east-1" # You can change the default as needed
 }
+
+variable "instance_name" {
+  description = "Name of EC2 instance"
+  type        = string
+  default     = "jenkins-server"
+
+}
+
+variable "security_group_name" {
+  description = "Security Group Name"
+  type        = string
+  default     = "jenkins_sg"
+
+}
